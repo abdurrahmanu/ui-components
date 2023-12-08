@@ -1,27 +1,21 @@
 <script setup>
-import { ref, watchEffect, createApp, onMounted } from 'vue';
-// import Calendar from './components/calendar/Calendar.vue';
-// import LineBreak from './components/detectLineBreaks/lineBreak.vue'
-// import pagination from './components/pagination/pagination.vue';
-import tooltip from './components/tooltip/tooltip.vue'
-import animatedList from './components/animatedList/animatedList.vue'
-import windowClick from './components/windowClick/windowClickEffect.vue'
+import { ref } from 'vue';
+import windowClick from './components/windowClick/windowClick.vue';
 </script>
 
 <template>
-  <windowClick />
-  <!-- <animatedList />
-  <tooltip value="home">
-    <div class="bg-blue-300 p-4">House</div>
-  </tooltip> -->
+  <windowClick
+  target="effect-body" />
+
+  <windowClick
+  multi
+  target="effect-bbb"
+  :number="20" />
+
+  <div id="body" class="bg-red-300 h-[100px]"></div>
+  <div id="bbb" class="h-[100px] bg-yellow-400"></div>
+
 </template>
-
-
-
-
-
-
-
 
 
 
