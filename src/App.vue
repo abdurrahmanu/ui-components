@@ -10,12 +10,21 @@ import windowClick from './components/windowClick/windowClick.vue';
   <windowClick
   multi
   target="effect-bbb"
-  :number="20" />
+  :number="4" />
 
   <div id="body" class="bg-red-300 h-[100px]"></div>
   <div id="bbb" class="h-[100px] bg-yellow-400"></div>
 
 </template>
+
+
+
+
+
+
+
+
+
 
 
 

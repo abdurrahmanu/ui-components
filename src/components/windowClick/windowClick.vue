@@ -1,18 +1,19 @@
 <template>
     <div id="click_#_effect">
-        <div v-if="multi" ref="effectElements">
+        <div v-show="multi" ref="effectElements">
             <windowClick 
             @targetClicked="targetClicked"
             v-for="index in number" 
             :key="index" 
+            :index="index"
             :target="target" 
             :noException="noException"
-            :direction="direction"
+            :direction="directions[index - 1]"
             :time="time"
             :rainbow="rainbow" />
         </div>
 
-        <div v-else ref="effectElement">
+        <div v-show="!multi" ref="effectElement">
             <windowClick
             @targetClicked="targetClicked"
             :noException="noException"
@@ -23,12 +24,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import windowClick from './windowClickEffect.vue';
 
 const multi = ref(false)
 const effectElements = ref([])
 const effectElement = ref(null)
+const directions = ['top', 'left', 'right', 'bottom', 'top-left', 'top-right', 'bottom-left', 'bottom-right', 't-top-left', 't-top-right', 'b-bottom-left', 'b-bottom-right',]
 const props = defineProps({
     number: Number,
     rainbow: Boolean,
@@ -42,18 +44,5 @@ const props = defineProps({
 watchEffect(() => {
     multi.value = props.multi
 })
-
-const targetClicked = () => {
-    console.log(multi.value, effectElements.value.children);
-    if (multi.value && effectElements.value.children[0] instanceof HTMLElement) {
-        
-    } 
-}
-
-onMounted(() => {
-})
-
 </script>
 
-<style scoped>
-</style>
