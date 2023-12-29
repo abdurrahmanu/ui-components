@@ -1,63 +1,80 @@
 <!-- 
-    ***********REUSABLE DROPDOWN COMPONENT***************
+   * ***********REUSABLE DROPDOWN COMPONENT***************
+    This dropdown accepts two optional props (options, defaultOpt) and emits selected (value)
+    
+    *PROP 1 =>  {options : Array[]} - This prop is optional. It is an array, nested HTML Element Children can be used instead of the options prop
 
-    This dropdown accepts two optional props (options, defaultOpt) and emits (value)
-    ..........................................
-    PROP 1.
-    {options : Array} - This prop is optional.
+    *AS AN  ARRAY ATTRIBUTE
+    <Dropdown 
+    :options="['option 1', 'option 2']" />
 
-    <Dropdown options="['option 1', 'option 2']"
-    ......................................
-    ......................................
-    PROP 2.
-    {defaultOpt: String} - This prop is optional. If no defaultOpt is included, the defaultOpt will be the first option.
-
-    <Dropdown optionsDefault="option 1" />
-    .......................................
-    .......................................
-    options can be <div>option</div> elements, instead of array
-
+    *AS ELEMENTS
     <Dropdown>
       <div>first option</div>
       <div>second option</div>
     </Dropdown>
-    ..........................................
-    ..........................................
-    EMITTED STATE
-    The component emits the selected option state as value as standard for HTML elements
 
+    *PROP 2. => {defaultOpt: String} - This prop is optional. If no default option is included, the default option will be the first option.
+    <Dropdown 
+    options="['option 1', 'option 2']" /> // Default option here is 'option 1'
+
+    *The default option can be the index of the an option in the options Array[] prop 
+    <Dropdown 
+    :defaultOpt="option 2"
+    :options="['option 1', 'option 2']" /> // Default option here is 'option 2'
+
+  *The default option can be the exact value of an option in the options Array[] prop
+    <Dropdown 
+    :defaultOpt="option 1" 
+    options="['option 1', 'option 2']" /> // Default option here is 'option 1'
+
+    *if the options are HTML Elements, the defaultOption can only be indexes of the ChildNodes of the Dropdown component
+      <Dropdown :defaultOpt="1">
+      <div>first option</div>
+      <div>second option</div>
+    </Dropdown>
+
+    *EMITTED STATE :  The component emits the selected option state for use outside the component
     <Dropdown value="selectedOption = $event" />
-    ............................................
-    ............................................
 
-    The component utilizes up and down arrow keys for options navigation, enter key to choose options and other features.
+    ............................................................
+    *EXTRAS
+    The component utilizes up and down arrow keys for options navigating through the options, enter key to choose options.
 -->
 
 <script setup>
 import { onMounted, ref, defineProps, watchEffect, watch, defineEmits } from 'vue';
 
+const emit = defineEmits(['value'])
 const props = defineProps({
   options: Array,
   defaultOpt: String,
 })
 
-const emit = defineEmits(['value'])
-
-const dropdownToggle = ref(true)
-const selectedText = ref('')
 const optionsRef = ref(null)
 const selectionPreview = ref(null)
+const dropdownContainer = ref(null)
+const dropdownOptions = ref(null)
+const dropdownToggle = ref(true)
+const selectedText = ref('')
 const selectIndex = ref(0)
 
 onMounted(() => {
   if (props.options || optionsRef.value.children.length) {
     const options = ref(Array.from(optionsRef.value.children))
+
     dropdownToggle.value = false
   
     // INITIAL OPTION AND OPTION INDEX
     if (props.options) {
-      if (props.defaultOpt) {
-        selectIndex.value = props.options.indexOf(props.defaultOpt)
+      if (props.defaultOpt && typeof +props.defaultOpt === 'number' && !(+props.defaultOpt > options.value.length)) {
+          selectIndex.value = +props.defaultOpt
+          options.value[+props.defaultOpt].classList.add('bg-blue-500')
+          selectedText.value = options.value[+props.defaultOpt].innerText
+      }  else {
+        selectIndex.value = 0
+        options.value[0].classList.add('bg-blue-500')
+        selectedText.value = options.value[0].innerText
       }
     } else {
       selectedText.value = options.value[0].innerText
@@ -66,9 +83,9 @@ onMounted(() => {
   
     // RESIZE PREVIEW CONTAINER TO LONGEST OPTION WIDTH
     const { longestOptionWidth } = longestOptionIndexAndWidth(options.value)
-    selectionPreview.value.style.width = longestOptionWidth.value + 'px'
-  
-  
+    dropdownOptions.value.style.width = longestOptionWidth.value + 'px'
+    
+
     // SELECT OPTION WITH ARROW UP AND DOWN KEYS
     window.addEventListener('keydown', (event) => {
       selectOptionByArrowKey(event, options.value)
@@ -76,9 +93,7 @@ onMounted(() => {
   
     // SELECT OPTION WITH ENTER KEY
     window.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        selectOptionByEnterKey(event, options.value)
-      }
+      if (event.key === 'Enter')  selectOptionByEnterKey(event, options.value)
     })
   
     //CLOSE DROPDOWN
@@ -89,7 +104,7 @@ onMounted(() => {
       }, 100);
     }
   })
-  
+
     // WATCH OPTION CHANGE
     watch(selectIndex, (newVal, oldVal) => {    
       if (!props.options) {
@@ -101,8 +116,7 @@ onMounted(() => {
         options.value[newVal].classList.add('bg-blue-500')
       }
     })
-  }
-
+  }  
 })
 
 const longestOptionIndexAndWidth = (options) => {
@@ -116,7 +130,13 @@ const longestOptionIndexAndWidth = (options) => {
     }
   })
   
-  const longestOptionWidth = ref(options[longestOptionIndex.value].getBoundingClientRect().width)
+
+  let el = options[longestOptionIndex.value]
+  el.display = 'hidden'
+  document.body.appendChild(el)
+  const cssObject = getComputedStyle(el)
+  const longestOptionWidth = ref(cssObject.getPropertyValue('width'))
+  document.body.removeChild(el)
 
   return {
     longestOptionWidth,
@@ -174,50 +194,62 @@ watchEffect(() => {
 </script>
 
 <template>
-    <div class="dropdown">
-      <div ref="selectionPreview" class="dropdown-container" @click="toggleDropdown">
+    <div ref="dropdownContainer" class="dropdown-container">
+      <div 
+      ref="selectionPreview" 
+      class="dropdown-preview" 
+      @click="toggleDropdown">
         {{ selectedText ? selectedText : defaultOpt ? defaultOpt : options && !defaultOpt ? options[0] : '-' }}
       </div>
 
       <!-- OPTIONS -->
-      <div class="">
-          <!-- OPTIONS AS DIVS -->
-          <div class="options" v-if="!options">
-            <div v-show="dropdownToggle" ref="optionsRef" @click="selectOptionByClick">
-              <slot />
+      <div class="relative" ref="dropdownOptions">
+          <!-- OPTIONS AS ELEMENTS -->
+          <div v-if="!options">
+            <div class="options">
+              <div 
+              ref="optionsRef" 
+              v-show="dropdownToggle" 
+              @click="selectOptionByClick">
+                <slot />
+              </div>
             </div>
           </div>
 
-          <!-- OPTIONS IN ARRAY -->
+          <!-- OPTIONS AS ARRAY -->
           <div v-else>
-            <div class="options" v-show="dropdownToggle" ref="optionsRef"  @click="selectOptionByClick">
+            <div 
+            ref="optionsRef" 
+            class="options" 
+            v-show="dropdownToggle" 
+            @click="selectOptionByClick">
               <div 
-              class="option" 
+              class="option"
               :class="[index === selectIndex ? 'selected-option' : 'not-selected-option']"
               v-for="(option, index) in options">
                 {{ option }}
               </div>
             </div>
           </div>
-
       </div>
     </div>
 </template>
 
 <style scoped>
-.dropdown {
-  @apply w-fit border-x border-gray-200 font-mono relative mt-20 ml-20
-}
 .dropdown-container {
-  @apply bg-gray-600 p-1 w-full text-white text-xs border-2 border-blue-400 box-content
+  @apply border-x border-black border-b-black border rounded-t-md font-mono relative w-fit
+}
+
+.dropdown-preview {
+  @apply bg-red-600 p-1 w-full text-white text-xs box-content rounded-md rounded-b-none
 }
 
 .options {
-  @apply transition-all duration-500
+  @apply transition-all duration-500 absolute left-0 border border-t-0  w-full
 }
 
-.option {
-  @apply border-b border-gray-300 w-full text-sm text-center p-1 hover:bg-blue-300
+.option, :slotted(div) {
+  @apply border-b  text-center p-1 hover:bg-blue-300 text-xs relative
 }
 
 .selected-option {
@@ -227,11 +259,6 @@ watchEffect(() => {
 .not-selected-option {
   @apply bg-transparent text-xs
 }
-
-:slotted(div) {
-  @apply hover:bg-blue-200 text-xs p-1 border-b border-gray-200 text-center
-}
-
 </style>
 
 
