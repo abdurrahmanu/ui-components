@@ -18,7 +18,7 @@ const props = defineProps({
     start: Boolean,
     length: Number,
     animate: Boolean,
-    animationType: String
+    animationType: cString
 })
 
 const animationName = ref(null)

@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, onMounted, watchEffect, computed, onBeforeMount } from 'vue';
+import { ref, defineProps, defineEmits, onMounted, watchEffect, onBeforeMount } from 'vue';
 
 const paginationArray = ref([])
 const paginationShowArray = ref([])
@@ -43,14 +43,14 @@ const props = defineProps({
 })
 
 watchEffect(() => {
-initialPage.value = props.initialPage
-showLength.value = props.showLength
-length.value = props.length
+    initialPage.value = props.initialPage
+    showLength.value = props.showLength
+    length.value = props.length
 })
 
 onBeforeMount(() => {
     if (!props.showLength) showLength.value = 3
-    if (!props.length) length.value = 10
+    if (!props.length) length.value = 15
     if (!props.initialPage) initialPage.value = 1
 
     let backwardLimit = Math.floor(showLength.value / 2)
@@ -75,13 +75,8 @@ onBeforeMount(() => {
             } else break
         }
 
-        if (countBackward.value < backwardLimit) {
-            initialPageIsNotInAlignmentWithStart.value = true
-        }
-
-        if (countForward.value < forwardLimit) {
-            initialPageIsNotInAlignmentWithEnd.value = true
-        }
+        if (countBackward.value < backwardLimit) initialPageIsNotInAlignmentWithStart.value = true
+        if (countForward.value < forwardLimit) initialPageIsNotInAlignmentWithEnd.value = true
     }
     
     if (length.value) {
@@ -140,12 +135,12 @@ onBeforeMount(() => {
 })
 
 const goNext = () => {
-    let lastItem = paginationShowArray.value[paginationShowArray.value.length - 1]
+    let lastIndex = paginationShowArray.value[paginationShowArray.value.length - 1]
 
-    if (lastItem < length.value && lastItem !== '') {
+    if (lastIndex < length.value && lastIndex !== '') {
         page.value++
         paginationShowArray.value.shift()
-        paginationShowArray.value.push(lastItem + 1)
+        paginationShowArray.value.push(lastIndex + 1)
         emit('pageNumber', page.value)
     }
 
@@ -182,10 +177,11 @@ onMounted(() => emit('pageNumber', initialPage.value))
 
 <style scoped>
 .container {
-    @apply flex items-center m-auto bg-sky-500 rounded-md px-2 p-1 text-xs font-bold w-fit
+    @apply flex items-center m-auto bg-green-500 rounded-md p-[2px] text-xs w-fit
 }
+
 .page {
-    @apply p-2 border bg-zinc-100 font-mono rounded-md w-[40px]
+    @apply p-1 border bg-zinc-100 font-mono rounded-md w-fit
 }
 
 .arrow {
@@ -193,11 +189,11 @@ onMounted(() => emit('pageNumber', initialPage.value))
 }
 
 .pagesList {
-    @apply flex gap-1 items-center w-fit m-auto overflow-hidden px-2 transition-all duration-200
+    @apply flex gap-1 items-center w-fit m-auto overflow-hidden px-1 transition-all duration-200
 }
 
 .current-page {
-    @apply w-7 h-12 flex p-1 items-center justify-center px-2
+    @apply w-5 h-8 flex p-1 items-center justify-center px-2 py-[2px]
 }
 </style>
 
