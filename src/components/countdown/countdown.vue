@@ -21,6 +21,8 @@ const props = defineProps({
     animationType: cString
 })
 
+
+//example
 const animationName = ref(null)
 const countDownElement = ref(null)
 const currentCountDown = ref(null)
