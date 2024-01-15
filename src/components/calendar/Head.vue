@@ -1,42 +1,21 @@
 <template>
-    <div class="head">
-        <div @click="switchMonth('prev')"  class="prev">&lt;</div>
-        <div class="text-container">
-            <div class="text">
-                {{ month }} {{ viewYear }}
+    <div class="flex items-center justify-between text-black">
+        <div @click="$emit('switchMonth', 'prev')"  class="ptext-xl font-bold font-mono text-centerrev">&lt;</div>
+        <div class="text-containertext-center uppercase py-2 font-semibold text-teal-800">
+            <div class="textw-fit text-[10px]">
+                {{ monthName }} {{ viewYear }}
             </div> 
         </div>
-        <div @click="switchMonth('next')" class="next">></div>
+        <div @click="$emit('switchMonth', 'next')" class="ntext-xl font-bold font-mono text-centerext">></div>
     </div>
 </template>
 
 <script setup>
-import { useCalendarStore } from './store/calendar-store';
-import {storeToRefs} from 'pinia'
+import { defineEmits } from 'vue';
 
-const store = useCalendarStore()
-const { viewYear, month  } = storeToRefs(store)
-const { switchMonth} = store
+// const emit = defineEmits(['switchMonth'])
+const props = defineProps({
+    viewYear: Number,
+    monthName: String
+})
 </script>
-
-<style scoped>
-.head {
-@apply flex items-center justify-between text-black
-}
-
-.text-container {
-@apply text-center uppercase py-2 font-semibold text-teal-800
-}
-
-.text {
-@apply w-fit text-[10px]
-}
-
-.prev {
-@apply text-xl font-bold font-mono text-center
-}
-
-.next {
-@apply text-xl font-bold font-mono text-center
-}
-</style>

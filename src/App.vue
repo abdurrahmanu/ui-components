@@ -1,14 +1,14 @@
 <script setup>
-import { onBeforeMount, onMounted, ref, watchEffect } from 'vue';
-import pagination from './components/pagination/pagination.vue';
+import { ref } from 'vue';
 import calendar from './components/calendar/Calendar.vue'
 
-const page = ref(0)
-
+const value = ref('')
 </script>
 
 <template>
-    <calendar />
+    <div class="flex justify-center">
+        <calendar  />
+    </div>
 
 <!-- const cssObject = window.getComputedStyle(dropdownContainer)
     const top = cssObject.getPropertyValue('top')

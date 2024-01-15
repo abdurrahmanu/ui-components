@@ -1,10 +1,10 @@
 <template>
-    <thead class="">
+    <thead>
         <th class="font-semibold text-[10px] font-mono text-blue-400 grid grid-cols-7">
             <td
             v-for="(dayName , index) in weekDays"
             :key="index"
-            :class="[weekDays[firstDay] === dayName ? 'border border-blue-400 rounded-md' : '', weekDays[weekDayIndex] === '' ? 'text-blue-700' : '']">
+            :class="[weekDays[firstDayOfMonth] === dayName ? 'border border-blue-400 rounded-md' : '', weekDays[weekDayIndex] === '' ? 'text-blue-700' : '']">
                 {{ dayName }}
             </td>
         </th>
@@ -12,9 +12,11 @@
 </template>
 
 <script setup>
-import {storeToRefs} from 'pinia'
-import { useCalendarStore } from './store/calendar-store';
+import { ref, defineProps } from 'vue';
+const weekDays = ref(['sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat',])
 
-const calendarStore = useCalendarStore()
-const {weekDays, firstDay, weekDayIndex} = storeToRefs(calendarStore)
+const props = defineProps({
+    firstDayOfMonth: Number,
+    weekDayIndex: Number
+})
 </script>
