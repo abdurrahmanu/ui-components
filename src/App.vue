@@ -1,26 +1,12 @@
-<script setup>
-import { ref } from 'vue';
-import calendar from './components/calendar/Calendar.vue'
-
-const value = ref('')
-</script>
-
 <template>
-    <div class="flex justify-center">
-        <calendar  />
-    </div>
-
-<!-- const cssObject = window.getComputedStyle(dropdownContainer)
-    const top = cssObject.getPropertyValue('top')
-    dropdownOptions.value.style.top = top + 'px' -->
+    <navBar  class="opacity-[50%]"/>
+    <HomeView />
 </template>
 
-<style>
-
-</style>
-
-
-
+<script setup>
+import navBar from './components/navBar.vue'
+import HomeView from './views/HomeView.vue'
+</script>
 
 
 
@@ -43,3 +29,20 @@ const value = ref('')
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- responsive-text --- font-size: calc(16px + (24 -16) * ((100vw - 320px) / (1920 - 320))); -->

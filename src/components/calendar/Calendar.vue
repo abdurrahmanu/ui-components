@@ -26,21 +26,21 @@ import { ref, watchEffect, computed } from 'vue';
 import Month from './Month.vue';
 import Preview from './Preview.vue';
 
-    const months = ref([ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'])
-    const monthsObject = ref({
-        'January': 31,
-        'February': 28,
-        'March': 31,
-        'April': 30,
-        'May': 31,
-        'June': 30,
-        'July': 31,
-        'August': 31,
-        'September': 30,
-        'October': 31,
-        'November': 30,
-        'December': 31
-    })
+const months = ref([ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'])
+const monthsObject = ref({
+    'January': 31,
+    'February': 28,
+    'March': 31,
+    'April': 30,
+    'May': 31,
+    'June': 30,
+    'July': 31,
+    'August': 31,
+    'September': 30,
+    'October': 31,
+    'November': 30,
+    'December': 31
+})
 
     const toggleCalendar = ref(false)
     const dayIndex = ref(new Date().getDate())
@@ -52,7 +52,7 @@ import Preview from './Preview.vue';
     const monthName = computed(() => currentMonth(currentMonthIndex.value) )
     const numberOfDaysInMonth = computed(() => viewYear.value % 4 === 0 && monthName.value === 'February' ? 29 : monthsObject.value[monthName.value] )
     const firstDayOfMonth = computed(() => new Date(viewYear.value, currentMonthIndex.value).getDay() )
-    
+
     const switchMonth = (arg) => {
         if (arg === 'prev' && currentMonthIndex.value > 0) currentMonthIndex.value--;
 
@@ -125,6 +125,7 @@ import Preview from './Preview.vue';
     })
 
     watchEffect(() => fullDate.value = validatedDate() )
+
 </script>
 
 

@@ -18,7 +18,6 @@ const props = defineProps({
     start: Boolean,
     length: Number,
     animate: Boolean,
-    animationType: cString
 })
 
 //example
