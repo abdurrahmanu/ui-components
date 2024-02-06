@@ -1,201 +1,83 @@
 <template>
-    <!-- 
-    ACCEPTS 3 PROPS
-
-    *initialPage...eg 5.
-    *showLength....eg 1,2,3,4,5
-    *length....eg 100 
-
-        <div>
-            <Pagination
-            initialPage=30
-            showLength=5
-            length=100
-            />
-        </div>
-    -->
-
-    <div class="container">
-        <div @click="goPrev" class="arrow">&lt;</div>
-        <div class="pagesList">
-            <div :class="[pageNumber === page ? 'current-page': '']" class="page" v-for="(pageNumber, index) in paginationShowArray" :key="index">
-                {{ pageNumber }} 
+    <div class="flex items-center m-auto rounded-md p-[2px] text-xs w-fit">
+        <div @click="prev" class="p-1 font-mono text-xl text-black">&lt;</div>
+        <div class="flex items-center gap-1 px-1 m-auto overflow-hidden transition-all duration-200 w-fit">
+            <div :class="[currentPage === page ? 'w-5 h-8 flex bg-blue-600 text-white items-center justify-center px-2 py-[2px]': 'text-black border border-zinc-300']" class="p-1 font-mono rounded-md bg-zinc-100 w-fit" v-for="(page, index) in showArray" :key="index">
+                {{ page }} 
             </div>
         </div>
-        <div @click="goNext" class="arrow">></div>
+        <div @click="next" class="p-1 font-mono text-xl text-black">></div>
     </div>
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, onMounted, watchEffect, onBeforeMount } from 'vue';
+import { ref, onMounted, watchEffect, onBeforeMount, computed, unref } from 'vue';
 
-const paginationArray = ref([])
-const paginationShowArray = ref([])
-const page = ref()
-const initialPage = ref()
+const currentPage = ref(1)
 const showLength = ref()
-const length = ref()
 const emit = defineEmits(['pageNumber'])
+
 const props = defineProps({
-    initialPage: Number,
+    currentPage: Number,
     showLength: Number,
     length: Number,
+    prevButtonText: String,
+    nextButtonText: String,
+    middle: Boolean,
 })
 
 watchEffect(() => {
-    initialPage.value = props.initialPage
+    currentPage.value = props.currentPage
     showLength.value = props.showLength
-    length.value = props.length
 })
 
 onBeforeMount(() => {
-    if (!props.showLength) showLength.value = 3
-    if (!props.length) length.value = 15
-    if (!props.initialPage) initialPage.value = 1
-
-    let backwardLimit = Math.floor(showLength.value / 2)
-    let forwardLimit = Math.floor(showLength.value / 2)
-    const initialPageIsNotInAlignmentWithStart = ref(false)
-    const initialPageIsNotInAlignmentWithEnd = ref(false)
-
-    if (initialPage.value && length.value) {
-        const countBackward = ref(0)
-        const countForward = ref(0)
-        page.value = initialPage.value
-
-        for (let index = initialPage.value - 1; index > 0; index--) {
-            if (countBackward.value < backwardLimit) {                
-                countBackward.value++
-            } else break
+    let array = ref([])
+    if (props.showLength) {
+        if (!props.middle) {
+        for (let index = 0; index < props.showLength; index++) {
+            array.value.push(props.currentPage + index)
         }
-
-        for (let index = initialPage.value + 1; index < length.value + 1; index++) {
-            if (countForward.value < forwardLimit) {
-                countForward.value++
-            } else break
-        }
-
-        if (countBackward.value < backwardLimit) initialPageIsNotInAlignmentWithStart.value = true
-        if (countForward.value < forwardLimit) initialPageIsNotInAlignmentWithEnd.value = true
-    }
-    
-    if (length.value) {
-        for (let index = 1; index < length.value + 1; index++) {
-            paginationArray.value.push(index)
+    } else {
+        for (let index = 0; index < props.showLength; index++) {
+            
         }
     }
-
-    if (showLength.value) {
-        if (!initialPageIsNotInAlignmentWithStart.value && !initialPageIsNotInAlignmentWithEnd.value) {
-            let start = initialPage.value - backwardLimit
-            let limit =  initialPage.value + forwardLimit + 1
-            for (let index = start; index < limit; index++) {
-                paginationShowArray.value.push(index)
-            }
-        }
-
-        if (initialPageIsNotInAlignmentWithStart.value) {
-            const start = ref(initialPage.value - backwardLimit)
-            const limit = ref(initialPage.value + 1)
-
-            for (let index = start.value; index < limit.value; index++) {
-                if (index > 0) {
-                    paginationShowArray.value.push(index)
-                } else {
-                    paginationShowArray.value.push('')
-                }
-            }
-
-            start.value = limit.value
-            limit.value = start.value + forwardLimit
-            for (let index = start.value; index < limit.value; index++) {
-                paginationShowArray.value.push(index)
-            }
-        }
-
-        if (initialPageIsNotInAlignmentWithEnd.value) {
-            const start = ref(initialPage.value - backwardLimit)
-            const limit = ref(initialPage.value + 1)
-
-            for (let index = start.value; index < limit.value; index++) {
-                paginationShowArray.value.push(index)
-            }
-
-            start.value = limit.value
-            limit.value = start.value + forwardLimit
-            for (let index = start.value; index < limit.value; index++) {
-                if (index < length.value + 1) {
-                    paginationShowArray.value.push(index)
-                } else {
-                    paginationShowArray.value.push('')
-                }
-            }
-        }
     }
 })
 
-const goNext = () => {
-    let lastIndex = paginationShowArray.value[paginationShowArray.value.length - 1]
-
-    if (lastIndex < length.value && lastIndex !== '') {
-        page.value++
-        paginationShowArray.value.shift()
-        paginationShowArray.value.push(lastIndex + 1)
-        emit('pageNumber', page.value)
+const showArray = computed(() => {
+    let array = ref([])
+    if (!props.middle) {
+            for (let index = 0; index < props.showLength; index++) {
+                array.value.push(props.currentPage + index)
+            }
+    } else {
+        for (let index = 0; index < props.showLength; index++) {
+            
+        }
     }
 
-    else {
-        if (page.value !== length.value) {
-            page.value++
-            paginationShowArray.value.shift()
-            paginationShowArray.value.push('')
-            emit('pageNumber', page.value)
-        }
+    return unref(array)
+})
+
+const next = () => {
+    if (currentPage.value < props.length) {
+        currentPage.value++ 
+        emit('pageNumber', currentPage.value)
     }
 }
 
-const goPrev = () => {
-    if (paginationShowArray.value[0] > 1) {
-        page.value--
-        paginationShowArray.value.pop()
-        paginationShowArray.value.unshift((paginationShowArray.value[0] - 1))
-        emit('pageNumber', page.value)
-    }
-    
-    else {
-        if (page.value !== 1) {
-            page.value--
-            paginationShowArray.value.pop()
-            paginationShowArray.value.unshift('')
-            emit('pageNumber', page.value)
-        }
+const prev = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--
+        emit('pageNumber', currentPage.value)
     }
 }
 
-onMounted(() => emit('pageNumber', initialPage.value))
+onMounted(() => emit('pageNumber', currentPage.value))
 </script>
 
-<style scoped>
-.container {
-    @apply flex items-center m-auto bg-green-500 rounded-md p-[2px] text-xs w-fit
-}
-
-.page {
-    @apply p-1 border bg-zinc-100 font-mono rounded-md w-fit
-}
-
-.arrow {
-    @apply font-mono text-white text-xl p-1
-}
-
-.pagesList {
-    @apply flex gap-1 items-center w-fit m-auto overflow-hidden px-1 transition-all duration-200
-}
-
-.current-page {
-    @apply w-5 h-8 flex p-1 items-center justify-center px-2 py-[2px]
-}
-</style>
 
 
 
