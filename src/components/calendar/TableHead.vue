@@ -9,6 +9,7 @@
             </td>
         </th>
     </thead>
+
 </template>
 
 <script setup>
@@ -20,3 +21,4 @@ const props = defineProps({
     weekDayIndex: Number
 })
 </script>
+

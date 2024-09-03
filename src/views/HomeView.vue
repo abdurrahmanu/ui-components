@@ -1,38 +1,17 @@
+<template>
+    <div class="bg-neutral-900 min-h-[100dvh]"></div>
+</template>
+
 <script setup>
-import { ref, onBeforeMount } from 'vue';
-import AdSection from '../components/AdSection.vue'
-import sidebar from '../components/sidebar.vue'
-import MainView from './MainView.vue'
-import {useBgMode} from '../store/bgMode.js'
-import {globalStore} from '../store/global.js'
-import {storeToRefs} from 'pinia'
+import Toast from '../components/Toast.vue';
+import Header from '../components/Header.vue';
+import ClickEffect from '../components/ClickEffect.vue';
+import BulletItem from '../components/BulletItem.vue';
+import Countdown from '../components/Countdown.vue';
+import Scroller from '../components/Scroller.vue'
+import MouseDisabler from '../components/MouseDisabler.vue';
+import HorizontalScrollUI from '../components/HorizontalScrollUI.vue';
+import ScreenInnerShadow from '../components/ScreenInnerShadow.vue';
 
-const bgMode = useBgMode()
-const {bg} = storeToRefs(bgMode)
-const {checkLocalStorageForSavedBackground} = bgMode
-
-const store = globalStore()
-const {componentsString} = store
-const {activeComponent} = storeToRefs(store)
-
-onBeforeMount(() => {
-    checkLocalStorageForSavedBackground()
-})
 </script>
 
-<template>
-        <div :class="bg" class=" text-white bg-zinc-800 pt-[50px] min-h-screen max-w-[1000px] m-auto">
-            <div class="grid grid-cols-8">
-                <sidebar class="hidden min-h-[100%] md:block">
-                    <div class="max-w-[170px] transition duration-100 w-fit">                            
-                        <div 
-                        class="p-3 px-5 text-[10px] text-white hover:bg-zinc-900 hover:text-zinc-100"
-                        @click="activeComponent = component" 
-                        v-for="(component, index) in componentsString">{{ component }}</div>
-                    </div>
-                </sidebar>
-                <MainView />                
-                <AdSection />
-            </div>
-        </div>
-</template>

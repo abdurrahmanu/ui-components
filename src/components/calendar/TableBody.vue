@@ -1,13 +1,12 @@
 <template>
     <tbody>
         <tr class="grid grid-cols-7 gap-[1px] text-black" v-for="(row, index) in totalNumberOfRows" :key="index">
-
             <td
             v-for="(singleDay, index) in weekDays"
             :key="index"
             @click="watchDay(row, index + 1, dayIndexFn(row, index + 1))"
             :class="[dayIndexFn(row, index + 1) === weekDayIndex && dayIndexFn(row, index + 1).length ? 'bg-blue-400 rounded-full text-white shadow-md' : 'hover:bg-blue-600 hover:rounded-full hover:text-white', selectedDay === dayIndexFn(row, index) ? 'border-blue-700': ''] " 
-            class="p-2 rounded-full border border-transparent text-center text-black font-mono">
+            class="p-2 font-mono text-center text-black border border-transparent rounded-full">
                 {{ dayIndexFn(row, index + 1) }}
             </td>
         </tr>

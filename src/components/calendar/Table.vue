@@ -1,6 +1,5 @@
 <template>
     <table class="m-auto transition-all duration-75 text-[11px]">
-
         <TableHead
         :weekDayIndex="weekDayIndex"
         :firstDayOfMonth="firstDayOfMonth"/>
@@ -12,7 +11,6 @@
         :dayIndex="dayIndex"
         :weekDayIndex="weekDayIndex" 
         :numberOfDaysInMonth="numberOfDaysInMonth"  />
-
     </table>
 </template>
 

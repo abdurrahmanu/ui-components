@@ -1,10 +1,8 @@
 <template>
     <div v-show="toggle" class="w-[250px] text-xs h-fit flex left-0 absolute top-[30px] items-center justify-center gap-10">
-        <div class="bg-white border p-2 rounded-md shadow-lg text-gray-200 ">
-            <Head 
-            :viewYear="viewYear"
-            :monthName="monthName"
-            @switchMonth="$emit('switchMonth', $event)" />
+        <div class="p-2 text-gray-200 bg-white border rounded-md shadow-lg ">
+            <Head  :viewYear="viewYear" :monthName="monthName" @switch="$emit('switch', $event)" />
+            
             <Table
             @dayIndex="$emit('dayIndex', $event)"
             :dayIndex="dayIndex"
@@ -18,7 +16,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps } from 'vue';
 import Table from './Table.vue';
 import Head from './Head.vue'
 
@@ -32,5 +30,4 @@ const props = defineProps({
     weekDayIndex: Number,
     dayIndex: Number,
 })
-
 </script>
