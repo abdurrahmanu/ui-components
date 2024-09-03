@@ -16,9 +16,4 @@ export default {
     },
   },
   plugins: [],
-  darkMode: 'class',
-  slateMode: 'class',
-  blueMode: 'class',
-  skyMode: 'class',
-  tealMode: 'class',
 };
